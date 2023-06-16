@@ -61,7 +61,7 @@ def plot_cov_matrix(S):
 	fig, ax = plt.subplots()
 	plotting.plot_covariance(S,plot_correlation=True, ax=ax)
 	#plt.title("Covariance Matrix")
-	plt.savefig("COV.png")
+	plt.savefig("media/COV.png")
 
 key = "d8eabf9ca1dec61aceefd4b4a9b93992"
 
@@ -99,7 +99,7 @@ else:
 
 # Plot efficient frontier curve
 fig = plot_efficient_frontier_and_max_sharpe(mu, S)
-fig.savefig("EF.png")
+fig.savefig("media/EF.png")
 
 plot_cov_matrix(S)
 
@@ -129,11 +129,11 @@ with col2:
 col3, col4 = st.columns(2)
 with col3:
 	st.subheader("Optimized Max Sharpe Portfolio Performance")
-	st.image("EF.png")
+	st.image("media/EF.png")
 
 with col4:
 	st.subheader("Covariance Matrix")
-	st.image("COV.png")
+	st.image("media/COV.png")
 
 
 #print(ef)
