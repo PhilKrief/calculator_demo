@@ -8,7 +8,7 @@ st.set_page_config(page_title="Calculateur Demo", page_icon=":robot_face:", layo
 
 
 
-st.markdown('<div class="header"> <img src="media/Desj.png" alt="logo"/> <h1 style=\'text-align: center;\'>Demo de calculateur gestion de patrimoine Desjardins </h1> </div>', unsafe_allow_html=True)
+st.markdown('<div class="header"> <img src="media/desj.png" alt="logo"/> <h1 style=\'text-align: center;\'>Demo de calculateur gestion de patrimoine Desjardins </h1> </div>', unsafe_allow_html=True)
 
 
 
