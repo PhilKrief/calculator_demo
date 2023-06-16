@@ -63,6 +63,7 @@ def plot_cov_matrix(S):
 	#plt.title("Covariance Matrix")
 	plt.savefig("media/COV.png")
 
+
 key = "d8eabf9ca1dec61aceefd4b4a9b93992"
 
 st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit et autres outil de cette décennie 😬</h1>", unsafe_allow_html=True)

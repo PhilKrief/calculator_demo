@@ -20,6 +20,12 @@ def allocation_df_prep(allocation, df, returns):
     allocation_df.loc[:,:] = selected_row.values
     return allocation_df
 
+#Page Titles
+
+st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit et autres outil de cette décennie 😬</h1>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>Bonjour Martin et Sebastien :) </h3>", unsafe_allow_html=True)
+
+
 
 profiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
@@ -31,10 +37,6 @@ million = st.sidebar.checkbox("Veux tu voir l'évolution de 1,000,000$ ")
 fees = st.sidebar.number_input("Frais annuel (en decimale)")
 
 
-#Page Titles
-
-st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit et autres outil de cette décennie 😬</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>Bonjour Martin et Sebastien :) </h3>", unsafe_allow_html=True)
 
 
 
