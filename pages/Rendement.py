@@ -22,7 +22,7 @@ def allocation_df_prep(allocation, df, returns):
 
 #Page Titles
 
-st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patriomoine Desjardins </h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins </h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'> Example des données de rendements </h3>", unsafe_allow_html=True)
 
 

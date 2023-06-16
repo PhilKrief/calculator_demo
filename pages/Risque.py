@@ -66,7 +66,7 @@ def plot_cov_matrix(S):
 
 key = "d8eabf9ca1dec61aceefd4b4a9b93992"
 
-st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patriomoine Desjardins </h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins </h1>", unsafe_allow_html=True)
 
 st.markdown("<h3 style='text-align: center;'> Example des données de risque </h3>", unsafe_allow_html=True)
 
