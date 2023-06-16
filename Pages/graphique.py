@@ -6,7 +6,7 @@ import numpy as np
 def calculate_portfolio_returns(allocations, returns):
     mask = returns.isna()
     allocations[mask] = np.nan
-
+    tester = 1
     row_sum = allocations.apply(lambda row: row.sum(skipna=True), axis=1)
     norm_aloc = allocations.div(row_sum, axis=0)
     print(norm_aloc)
