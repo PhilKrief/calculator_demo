@@ -82,10 +82,10 @@ def performance_table_2(years,rendement_mandat, rendement_bench, rendements_indi
     perf_df[mandat] = perf_df["Index"].map(dict_dum)
     return perf_df
 
-def financial_metric_table(years, rendement_mandat, rendement_bench, indices_df, mandat):
+def financial_metric_table(rendement_mandat, rendement_bench, indices_df, mandat):
     data = pd.DataFrame()
 
-    for time in years:
+    for time in [1,3, 5]:
         financial_metrics = performance_table_2(time,rendement_mandat, rendement_bench, indices_df, mandat).add_suffix('_%d'%time)
         data["Index"] = financial_metrics["Index_%d"%time]
         data = pd.merge(data, financial_metrics,  left_on="Index", right_on="Index_%d"%time, how="left")
@@ -97,55 +97,16 @@ def financial_metric_table(years, rendement_mandat, rendement_bench, indices_df,
     return data
 
 
-
-#Page Titles
-
-# Add the logo image file in the same directory as your script
-logo_path = "media/desj.png"
-
-# Create a container to hold the logo and header
-header_container = st.container()
-
-# Add the logo to the container
-with header_container:
-    logo_col, header_col = st.columns([1, 3])
-    logo_col.image(logo_path, use_column_width=True)
-
-    # Add the header text
-    header_col.markdown("<h2 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins</h2>", unsafe_allow_html=True)
-
-    header_col.markdown("<h3 style='text-align: center;'> Example des données de rendements </h3>", unsafe_allow_html=True)
-
-
-
 profiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
 
-st.session_state["profile"] = st.sidebar.multiselect("Quelle profile veux tu voir? ",options=profiles, default='A')
-st.session_state["periodes"] = st.sidebar.multiselect("Quelle periode veux tu voir? ",options=[1,3,5,10], default=3)
-
-indice = st.sidebar.checkbox("Veux tu voir l'indices? ")
-million = st.sidebar.checkbox("Veux tu voir l'évolution de 1,000,000$ ")
-
-fees = st.sidebar.number_input("Frais annuel (en decimale)")
 
 
+rendements_df = pd.read_excel("Sources - PowerBI Dashboard - GPD_SSD_VMD RandomData.xlsx",sheet_name="Rendements bruts")
+indices_df = pd.read_excel("Sources - PowerBI Dashboard - GPD_SSD_VMD RandomData.xlsx",, sheet_name="Rendements indices")
 
-
-
-
-if st.session_state["datafile"] is not None:
-    #read csv
-    rendements_df = pd.read_excel(st.session_state["datafile"] ,sheet_name="Rendements bruts")
-    indices_df = pd.read_excel(st.session_state["datafile"], sheet_name="Rendements indices")
-
-    allocation_profil = pd.read_excel(st.session_state["datafile"], sheet_name="Allocation").set_index(
-    'Code_Rendements').T
-
-else:
-    st.warning("you need to upload a csv or excel file.")
-
-
+allocation_profil = pd.read_excel("Sources - PowerBI Dashboard - GPD_SSD_VMD RandomData.xlsx",, sheet_name="Allocation").set_index(
+'Code_Rendements').T
 
 rendements_df["Year"] = pd.DatetimeIndex(rendements_df.Période).year
 rendements_df["Month"] = pd.DatetimeIndex(rendements_df.Période).month
@@ -159,15 +120,10 @@ returns_df_calc = rendements_df[funds]
 returns_df_calc['Encaisse'] = 0
 returns_df_calc.index = rendements_df.Période
 
-st.session_state['funddata'] =  returns_df_calc
-
-
-
 indices_df_calc =  indices_df[funds]
 indices_df_calc['Encaisse'] = 0
 indices_df_calc.index = indices_df.Période
 
-st.session_state['benchdata'] = indices_df_calc
 
 rendement_mandat = pd.DataFrame(index=rendements_df.Période)
 rendement_bench = pd.DataFrame(index=indices_df.Période)
@@ -179,13 +135,20 @@ for profile in profiles:
     rendement_bench[profile] = (calculate_portfolio_returns(allo, indices_df_calc))
     
 
-print(rendement_mandat.columns)
 graph_df = pd.DataFrame()
 graph_df.index = rendement_mandat.index
 
-if fees: 
-    monthly = fees / 12
-    rendement_mandat = rendement_mandat - monthly
+if st.session_state["profile"] is not None:
+    for profile in st.session_state['profile']:
+        #profile = st.session_state['profile']
+        graph_df['profile %s'%profile] = rendement_mandat_graph[profile]
+        metrique = financial_metric_table(rendement_mandat, rendement_bench, indices_df, profile)
+        cols = [i for i in list(metrique.columns) if i != 'Index']
+        financial_metrics[cols] = metrique[cols]
+
+rendement_mandat = ((1 + rendement_mandat).cumprod())
+rendement_bench = ((1 + rendement_bench).cumprod())
+
 
 
 
@@ -195,26 +158,11 @@ financial_metrics['Index'] = ['Fonds', 'Date de début', 'Date de fin', 'Rendeme
 
 if st.session_state["profile"] is not None:
     for profile in st.session_state['profile']:
-        metrique = financial_metric_table(st.session_state["periodes"], rendement_mandat, rendement_bench, indices_df, profile)
-        cols = [i for i in list(metrique.columns) if i != 'Index']
-        financial_metrics[cols] = metrique[cols]
-
-
-rendement_mandat = ((1 + rendement_mandat).cumprod())
-rendement_bench = ((1 + rendement_bench).cumprod())
-
-if million:
-    rendement_mandat_graph = rendement_mandat * 1000000
-    rendement_bench_graph = rendement_bench * 1000000
-else:
-    rendement_mandat_graph = rendement_mandat 
-    rendement_bench_graph = rendement_bench 
-
-
-if st.session_state["profile"] is not None:
-    for profile in st.session_state['profile']:
         #profile = st.session_state['profile']
         graph_df['profile %s'%profile] = rendement_mandat_graph[profile]
+        metrique = financial_metric_table(rendement_mandat, rendement_bench, indices_df, profile)
+        cols = [i for i in list(metrique.columns) if i != 'Index']
+        financial_metrics[cols] = metrique[cols]
         if indice:
             graph_df['indice %s'%profile] = rendement_bench_graph[profile]
 
@@ -226,5 +174,7 @@ if st.session_state["profile"] is not None:
 
 
 
+#st.dataframe(rendement_mandat)
 
+#st.dataframe(rendement_bench)
 

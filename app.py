@@ -5,25 +5,20 @@ import streamlit as st
 st.set_page_config(page_title="Calculateur Demo", page_icon=":robot_face:", layout='wide')
 
 
-
-
-
 # Add the logo image file in the same directory as your script
 logo_path = "media/desj.png"
 
 # Create a container to hold the logo and header
-header_container = st.beta_container()
+header_container = st.container()
 
 # Add the logo to the container
 with header_container:
-    logo_col, header_col = st.beta_columns([1, 3])
+    logo_col, header_col = st.columns([1, 3])
     logo_col.image(logo_path, use_column_width=True)
 
     # Add the header text
     header_col.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins</h1>", unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins </h1>", unsafe_allow_html=True)
-#st.markdown("<h3 style='text-align: center;'>  </h3>", unsafe_allow_html=True)
 
 
 if "datafile" not in st.session_state:
@@ -34,6 +29,8 @@ if "profile" not in st.session_state:
    st.session_state["profile"] = True
 if "funddata" not in st.session_state:
    st.session_state["funddata"] = True
+if "periodes" not in st.session_state:
+   st.session_state["periodes"] = True
 
 
 #if "profile2" not in st.session_state:

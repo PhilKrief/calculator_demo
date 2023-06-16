@@ -66,10 +66,23 @@ def plot_cov_matrix(S):
 
 key = "d8eabf9ca1dec61aceefd4b4a9b93992"
 
-st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins </h1>", unsafe_allow_html=True)
+#Page Titles
 
-st.markdown("<h3 style='text-align: center;'> Example des données de risque </h3>", unsafe_allow_html=True)
+# Add the logo image file in the same directory as your script
+logo_path = "media/desj.png"
 
+# Create a container to hold the logo and header
+header_container = st.container()
+
+# Add the logo to the container
+with header_container:
+    logo_col, header_col = st.columns([1, 3])
+    logo_col.image(logo_path, use_column_width=True)
+
+    # Add the header text
+    header_col.markdown("<h2 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins</h2>", unsafe_allow_html=True)
+
+    header_col.markdown("<h3 style='text-align: center;'> Example des données de risque </h3>", unsafe_allow_html=True)
 
 
 start_date = st.sidebar.date_input("Date de Debut: ")

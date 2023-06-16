@@ -1,8 +1,20 @@
 import pandas as pd
 import streamlit as st
 
-st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins </h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'> Example du questionnaire </h3>", unsafe_allow_html=True)
+# Add the logo image file in the same directory as your script
+logo_path = "media/desj.png"
+
+# Create a container to hold the logo and header
+header_container = st.container()
+
+# Add the logo to the container
+with header_container:
+    logo_col, header_col = st.columns([1, 3])
+    logo_col.image(logo_path, use_column_width=True)
+
+    # Add the header text
+    header_col.markdown("<h2 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins</h2>", unsafe_allow_html=True)
+    header_col.markdown("<h3 style='text-align: center;'> Example du questionnaire </h3>", unsafe_allow_html=True)
 
 
 # Define questions and choices
