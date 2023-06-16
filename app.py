@@ -3,6 +3,11 @@ import streamlit as st
 
 #Page Titles
 st.set_page_config(page_title="Calculateur Demo", page_icon=":robot_face:", layout='wide')
+
+st.markdown('<div class="header"> <img src="media/desj.png" alt="logo" /> <h1 style=\'text-align: center;\'>Demo de calculateur gestion de patrimoine Desjardins </h1> </div>', unsafe_allow_html=True)
+
+
+
 st.markdown("<h1 style='text-align: center;'>Demo de calculateur gestion de patrimoine Desjardins </h1>", unsafe_allow_html=True)
 #st.markdown("<h3 style='text-align: center;'>  </h3>", unsafe_allow_html=True)
 
