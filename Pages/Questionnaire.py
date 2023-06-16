@@ -1,10 +1,5 @@
 import pandas as pd
 import streamlit as st
-import altair as alt
-import numpy as np
-import matplotlib.pyplot as plt
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
 
 
 # Define questions and choices
