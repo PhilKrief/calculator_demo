@@ -3,8 +3,9 @@ import streamlit as st
 
 #Page Titles
 st.set_page_config(page_title="Calculateur Demo", page_icon=":robot_face:", layout='wide')
-st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit et autres 😬</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>Bonjour Martin et Sebastien :) </h3>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit </h1>", unsafe_allow_html=True)
+#st.markdown("<h3 style='text-align: center;'>  </h3>", unsafe_allow_html=True)
+
 
 if "datafile" not in st.session_state:
    st.session_state["datafile"] = True

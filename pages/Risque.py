@@ -66,8 +66,9 @@ def plot_cov_matrix(S):
 
 key = "d8eabf9ca1dec61aceefd4b4a9b93992"
 
-st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit et autres outil de cette décennie 😬</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>Example: Risque et Frontière Efficiente </h3>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Demo de l'outil Streamlit </h1>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'> Example des données de risque </h3>", unsafe_allow_html=True)
+
 
 
 start_date = st.sidebar.date_input("Date de Debut: ")
