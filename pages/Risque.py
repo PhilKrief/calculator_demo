@@ -99,6 +99,7 @@ else:
       tickers_string = st.sidebar.text_input('Enter all stock tickers to be included in portfolio separated by commas \
  WITHOUT spaces, e.g. "MA,FB,V,AMZN,JPM,BA"', '').upper()
       tickers = tickers_string.split(',')
+      print("here", tickers)
       if tickers:
         df = get_stock_portfolio_prices(tickers, key)
         df = df.loc[::-1]
