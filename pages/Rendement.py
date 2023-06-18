@@ -97,7 +97,6 @@ def financial_metric_table(years, rendement_mandat, rendement_bench, indices_df,
     return data
 
 
-
 #Page Titles
 
 # Add the logo image file in the same directory as your script
@@ -116,8 +115,6 @@ with header_container:
 
     header_col.markdown("<h3 style='text-align: center;'> Example des données de rendements </h3>", unsafe_allow_html=True)
 
-
-
 profiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
 
@@ -129,11 +126,6 @@ million = st.sidebar.checkbox("Veux tu voir l'évolution de 1,000,000$ ")
 
 fees = st.sidebar.number_input("Frais annuel (en decimale)")
 
-
-
-
-
-
 if st.session_state["datafile"] is not None:
     #read csv
     rendements_df = pd.read_excel(st.session_state["datafile"] ,sheet_name="Rendements bruts")
@@ -142,89 +134,74 @@ if st.session_state["datafile"] is not None:
     allocation_profil = pd.read_excel(st.session_state["datafile"], sheet_name="Allocation").set_index(
     'Code_Rendements').T
 
+    rendements_df["Year"] = pd.DatetimeIndex(rendements_df.Période).year
+    rendements_df["Month"] = pd.DatetimeIndex(rendements_df.Période).month
+
+
+    funds = ['Placement à court terme', 'Obligations gouvernementales', 'Obligations corporatives', 'Actions cdns grande cap', 'Actions cdns pet cap',
+            'Actions US Tax', 'Actions EAEO', 'Actions mondiales de PC', 'Actions des marchés émergents', 'Stratégies complémentaires',
+            'Stratégie à rendement absolu']
+
+    returns_df_calc = rendements_df[funds]
+    returns_df_calc['Encaisse'] = 0
+    returns_df_calc.index = rendements_df.Période
+
+    st.session_state['funddata'] =  returns_df_calc
+
+    indices_df_calc =  indices_df[funds]
+    indices_df_calc['Encaisse'] = 0
+    indices_df_calc.index = indices_df.Période
+
+    st.session_state['benchdata'] = indices_df_calc
+
+    rendement_mandat = pd.DataFrame(index=rendements_df.Période)
+    rendement_bench = pd.DataFrame(index=indices_df.Période)
+
+    for profile in profiles:
+        allo = allocation_df_prep(profile, allocation_profil, rendements_df)
+        rendement_mandat[profile] = (calculate_portfolio_returns(allo, returns_df_calc))
+        allo_bench = allocation_df_prep(profile, allocation_profil, indices_df)
+        rendement_bench[profile] = (calculate_portfolio_returns(allo, indices_df_calc))
+        
+    print(rendement_mandat.columns)
+    graph_df = pd.DataFrame()
+    graph_df.index = rendement_mandat.index
+
+    if fees: 
+        monthly = fees / 12
+        rendement_mandat = rendement_mandat - monthly
+
+    financial_metrics = pd.DataFrame()
+    financial_metrics['Index'] = ['Fonds', 'Date de début', 'Date de fin', 'Rendement brut (période)', 'Rendement indice (période)', 'Rendement brut (annualisée)', 'Rendement indice (annualisée)', 'Valeur ajoutée (période)', 'Valeur ajoutée annualisée', 'Risque actif annualisé', 'Ratio information', 'Beta', 'Alpha annualisé', 'Ratio sharpe', 'Coefficient de corrélation', 'Volatilité annualisée du fonds', "Volatilité annualisée de l'indice"]
+
+    if st.session_state["profile"] is not None:
+        for profile in st.session_state['profile']:
+            metrique = financial_metric_table(st.session_state["periodes"], rendement_mandat, rendement_bench, indices_df, profile)
+            cols = [i for i in list(metrique.columns) if i != 'Index']
+            financial_metrics[cols] = metrique[cols]
+
+    rendement_mandat = ((1 + rendement_mandat).cumprod())
+    rendement_bench = ((1 + rendement_bench).cumprod())
+
+    if million:
+        rendement_mandat_graph = rendement_mandat * 1000000
+        rendement_bench_graph = rendement_bench * 1000000
+    else:
+        rendement_mandat_graph = rendement_mandat 
+        rendement_bench_graph = rendement_bench 
+
+
+    if st.session_state["profile"] is not None:
+        for profile in st.session_state['profile']:
+            #profile = st.session_state['profile']
+            graph_df['profile %s'%profile] = rendement_mandat_graph[profile]
+            if indice:
+                graph_df['indice %s'%profile] = rendement_bench_graph[profile]
+
+        
+        st.line_chart(graph_df)
+        st.dataframe(financial_metrics)
 else:
     st.warning("you need to upload a csv or excel file.")
-
-
-
-rendements_df["Year"] = pd.DatetimeIndex(rendements_df.Période).year
-rendements_df["Month"] = pd.DatetimeIndex(rendements_df.Période).month
-
-
-funds = ['Placement à court terme', 'Obligations gouvernementales', 'Obligations corporatives', 'Actions cdns grande cap', 'Actions cdns pet cap',
-         'Actions US Tax', 'Actions EAEO', 'Actions mondiales de PC', 'Actions des marchés émergents', 'Stratégies complémentaires',
-         'Stratégie à rendement absolu']
-
-returns_df_calc = rendements_df[funds]
-returns_df_calc['Encaisse'] = 0
-returns_df_calc.index = rendements_df.Période
-
-st.session_state['funddata'] =  returns_df_calc
-
-
-
-indices_df_calc =  indices_df[funds]
-indices_df_calc['Encaisse'] = 0
-indices_df_calc.index = indices_df.Période
-
-st.session_state['benchdata'] = indices_df_calc
-
-rendement_mandat = pd.DataFrame(index=rendements_df.Période)
-rendement_bench = pd.DataFrame(index=indices_df.Période)
-
-for profile in profiles:
-    allo = allocation_df_prep(profile, allocation_profil, rendements_df)
-    rendement_mandat[profile] = (calculate_portfolio_returns(allo, returns_df_calc))
-    allo_bench = allocation_df_prep(profile, allocation_profil, indices_df)
-    rendement_bench[profile] = (calculate_portfolio_returns(allo, indices_df_calc))
-    
-
-print(rendement_mandat.columns)
-graph_df = pd.DataFrame()
-graph_df.index = rendement_mandat.index
-
-if fees: 
-    monthly = fees / 12
-    rendement_mandat = rendement_mandat - monthly
-
-
-
-financial_metrics = pd.DataFrame()
-financial_metrics['Index'] = ['Fonds', 'Date de début', 'Date de fin', 'Rendement brut (période)', 'Rendement indice (période)', 'Rendement brut (annualisée)', 'Rendement indice (annualisée)', 'Valeur ajoutée (période)', 'Valeur ajoutée annualisée', 'Risque actif annualisé', 'Ratio information', 'Beta', 'Alpha annualisé', 'Ratio sharpe', 'Coefficient de corrélation', 'Volatilité annualisée du fonds', "Volatilité annualisée de l'indice"]
-
-
-if st.session_state["profile"] is not None:
-    for profile in st.session_state['profile']:
-        metrique = financial_metric_table(st.session_state["periodes"], rendement_mandat, rendement_bench, indices_df, profile)
-        cols = [i for i in list(metrique.columns) if i != 'Index']
-        financial_metrics[cols] = metrique[cols]
-
-
-rendement_mandat = ((1 + rendement_mandat).cumprod())
-rendement_bench = ((1 + rendement_bench).cumprod())
-
-if million:
-    rendement_mandat_graph = rendement_mandat * 1000000
-    rendement_bench_graph = rendement_bench * 1000000
-else:
-    rendement_mandat_graph = rendement_mandat 
-    rendement_bench_graph = rendement_bench 
-
-
-if st.session_state["profile"] is not None:
-    for profile in st.session_state['profile']:
-        #profile = st.session_state['profile']
-        graph_df['profile %s'%profile] = rendement_mandat_graph[profile]
-        if indice:
-            graph_df['indice %s'%profile] = rendement_bench_graph[profile]
-
-    
-    st.line_chart(graph_df)
-    st.dataframe(financial_metrics)
-
-
-
-
-
 
 
