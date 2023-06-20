@@ -119,7 +119,7 @@ profiles = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
 
 st.session_state["profile"] = st.sidebar.multiselect("Quelle profile veux tu voir? ",options=profiles, default='A')
-st.session_state["periodes"] = st.sidebar.multiselect("Quelle periode veux tu voir? ",options=[1,3,5,10], default=3)
+st.session_state["periodes"] = st.sidebar.multiselect("Quelle periode veux tu voir? ",options=[1,3,5,10], default=1)
 
 indice = st.sidebar.checkbox("Veux tu voir l'indices? ")
 million = st.sidebar.checkbox("Veux tu voir l'évolution de 1,000,000$ ")
@@ -179,7 +179,18 @@ if st.session_state["datafile"] is not None:
             metrique = financial_metric_table(st.session_state["periodes"], rendement_mandat, rendement_bench, indices_df, profile)
             cols = [i for i in list(metrique.columns) if i != 'Index']
             financial_metrics[cols] = metrique[cols]
-
+    
+    financial_metrics.set_index("Index", inplace=True)
+    percentage_rows = ["Rendement brut (période)", "Rendement indice (période)", "Rendement brut (annualisée)", "Rendement indice (annualisée)", "Valeur ajoutée (période)", "Valeur ajoutée annualisée","Volatilité annualisée du fonds", "Volatilité annualisée de l'indice"]
+    number_rows  = ["Risque actif annualisé", "Ratio information", "Beta", "Alpha annualisé", "Ratio sharpe", "Coefficient de corrélation"]
+    
+    for row in percentage_rows:
+        financial_metrics.loc[row,] = financial_metrics.loc[row,].astype(float)
+        financial_metrics.loc[row,] = financial_metrics.loc[row,].apply('{:.2%}'.format)
+    for row in number_rows:
+        financial_metrics.loc[row,] = financial_metrics.loc[row,].astype(float)
+        financial_metrics.loc[row,] = financial_metrics.loc[row,].apply('{:.2}'.format)
+    print()
     rendement_mandat = ((1 + rendement_mandat).cumprod())
     rendement_bench = ((1 + rendement_bench).cumprod())
 

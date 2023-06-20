@@ -92,23 +92,27 @@ owndata = st.sidebar.checkbox("Veux tu utilisé ton propre data? ")
 
 
 if owndata:
-    returns = st.session_state['funddata']
-    mu = expected_returns.mean_historical_return(returns,returns_data=True, frequency=12)
-    S = risk_models.sample_cov(returns,returns_data=True, frequency=12)	
+    try:
+        returns = st.session_state['funddata']
+        mu = expected_returns.mean_historical_return(returns,returns_data=True, frequency=12)
+        S = risk_models.sample_cov(returns,returns_data=True, frequency=12)	
+    except:
+         st.warning("please insert your data on the app tabx")
+         
 else:
       tickers_string = st.sidebar.text_input('Enter all stock tickers to be included in portfolio separated by commas \
  WITHOUT spaces, e.g. "MA,FB,V,AMZN,JPM,BA"', '').upper()
       tickers = tickers_string.split(',')
       print("here", tickers)
-      if tickers:
+      if len(tickers)<=0:
         df = get_stock_portfolio_prices(tickers, key)
         df = df.loc[::-1]
         mu = expected_returns.mean_historical_return(df)
         print(mu)
         S = risk_models.sample_cov(df)
         print(S)
-      
-if mu:
+
+try:    
     fig = plot_efficient_frontier_and_max_sharpe(mu, S)
     fig.savefig("media/EF.png")
 
@@ -146,6 +150,6 @@ if mu:
         st.subheader("Covariance Matrix")
         st.image("media/COV.png")
 
-else: 
+except:
      st.warning("please insert your tickers or select the checkbox")
 
