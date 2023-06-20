@@ -147,7 +147,7 @@ with col3:
     st.image("media/EF.png")
 
 with col4:
-    st.subheader("Covariance Matrix")
+    st.subheader("Correlation Matrix")
     st.image("media/COV.png")
 
 st.warning("please insert your tickers or select the checkbox")
