@@ -97,7 +97,7 @@ if owndata:
         mu = expected_returns.mean_historical_return(returns,returns_data=True, frequency=12)
         S = risk_models.sample_cov(returns,returns_data=True, frequency=12)	
     except:
-         st.warning("please insert your data on the app tabx")
+         st.warning("please insert your data on the app tab")
          
 else:
       tickers_string = st.sidebar.text_input('Enter all stock tickers to be included in portfolio separated by commas \
@@ -112,44 +112,43 @@ else:
         S = risk_models.sample_cov(df)
         print(S)
 
-try:    
-    fig = plot_efficient_frontier_and_max_sharpe(mu, S)
-    fig.savefig("media/EF.png")
 
-    plot_cov_matrix(S)
+fig = plot_efficient_frontier_and_max_sharpe(mu, S)
+fig.savefig("media/EF.png")
 
-
-    # Get optimized weights
-    # Optimize for maximal Sharpe ratio
-    ef = EfficientFrontier(mu, S)
-    weights = ef.max_sharpe()
-    ef.portfolio_performance(verbose=True)
-    print(ef)
-    expected_annual_return, annual_volatility, sharpe_ratio = ef.portfolio_performance()
-    weights_df = pd.DataFrame.from_dict(weights, orient = 'index')
-    weights_df.columns = ['weights']
+plot_cov_matrix(S)
 
 
+# Get optimized weights
+# Optimize for maximal Sharpe ratio
+ef = EfficientFrontier(mu, S)
+weights = ef.max_sharpe()
+ef.portfolio_performance(verbose=True)
+print(ef)
+expected_annual_return, annual_volatility, sharpe_ratio = ef.portfolio_performance()
+weights_df = pd.DataFrame.from_dict(weights, orient = 'index')
+weights_df.columns = ['weights']
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Optimized Max Sharpe Portfolio Weights")
-        st.dataframe(weights_df)
+
+
+col1, col2 = st.columns(2)
+with col1:
+    st.subheader("Optimized Max Sharpe Portfolio Weights")
+    st.dataframe(weights_df)
+    
+with col2:
+    st.subheader('Expected annual return: {}%'.format((expected_annual_return*100).round(2)))
+    st.subheader('Annual volatility: {}%'.format((annual_volatility*100).round(2)))
+    st.subheader('Sharpe Ratio: {}'.format(sharpe_ratio.round(2)))
         
-    with col2:
-        st.subheader('Expected annual return: {}%'.format((expected_annual_return*100).round(2)))
-        st.subheader('Annual volatility: {}%'.format((annual_volatility*100).round(2)))
-        st.subheader('Sharpe Ratio: {}'.format(sharpe_ratio.round(2)))
-            
-    col3, col4 = st.columns(2)
-    with col3:
-        st.subheader("Optimized Max Sharpe Portfolio Performance")
-        st.image("media/EF.png")
+col3, col4 = st.columns(2)
+with col3:
+    st.subheader("Optimized Max Sharpe Portfolio Performance")
+    st.image("media/EF.png")
 
-    with col4:
-        st.subheader("Covariance Matrix")
-        st.image("media/COV.png")
+with col4:
+    st.subheader("Covariance Matrix")
+    st.image("media/COV.png")
 
-except:
-     st.warning("please insert your tickers or select the checkbox")
+st.warning("please insert your tickers or select the checkbox")
 
