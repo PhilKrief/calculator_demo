@@ -104,7 +104,7 @@ else:
  WITHOUT spaces, e.g. "MA,FB,V,AMZN,JPM,BA"', '').upper()
       tickers = tickers_string.split(',')
       print("here", tickers)
-      if len(tickers)<=0:
+      if len(tickers)>=0:
         df = get_stock_portfolio_prices(tickers, key)
         df = df.loc[::-1]
         mu = expected_returns.mean_historical_return(df)
